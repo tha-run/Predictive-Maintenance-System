@@ -1,8 +1,7 @@
 """
 ========================================================
   Industrial IoT Predictive Maintenance System
-  Author  : Senior ML Engineer
-  Dataset : data/dataset.csv
+  Dataset :Predictive Maintenance Dataset (AI4I 2020)
   Model   : RandomForestClassifier
   Goal    : Predict machine failure from sensor data
 ========================================================
@@ -237,7 +236,6 @@ def evaluate_model(
 
     return y_pred, y_prob, cm, importance_df
 
-'''
 # ─────────────────────────────────────────────────────────────────────────────
 # STEP 6 ▸ Plot Results
 # ─────────────────────────────────────────────────────────────────────────────
@@ -310,7 +308,7 @@ def plot_results(
     plot_path = os.path.join(MODEL_DIR, "dashboard.png")
     plt.savefig(plot_path, dpi=150, bbox_inches="tight")
     print(f"\n  Dashboard saved → {plot_path}")
-    plt.show()'''
+    plt.show()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -381,7 +379,7 @@ def main():
     X_train, X_test, y_train, y_test = split_data(X, y)
     model                           = train_model(X_train, y_train)
     y_pred, y_prob, cm, imp_df      = evaluate_model(model, X_test, y_test)
-    #plot_results(y_test, y_pred, y_prob, cm, imp_df)
+    plot_results(y_test, y_pred, y_prob, cm, imp_df)
     save_model(model)
 
     # ── Real-time Inference Demo ───────────────────────────────────────────────
