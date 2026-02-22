@@ -2,7 +2,6 @@
 ========================================================
   Industrial IoT Predictive Maintenance System
   Frontend : Streamlit Application
-  Author   : Senior ML Engineer
   Purpose  : Real-time machine failure probability prediction
 ========================================================
 """
