@@ -148,8 +148,3 @@ Then open **http://localhost:8501** in your browser.
 ![Dashboard](model/dashboard.png)
 
 ---
-
-## 👨‍💻 Author
-
-**Senior ML Engineer**  
-GitHub: [@tha-run](https://github.com/tha-run)
