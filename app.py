@@ -10,18 +10,12 @@ import joblib
 import pandas as pd
 import streamlit as st
 
-# ── Page Configuration ────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="IoT Predictive Maintenance",
     page_icon="⚙️",
     layout="centered",
 )
-
-# ── Constants ─────────────────────────────────────────────────────────────────
 MODEL_PATH = "model/predictive_maintenance_model.pkl"
-
-# These must exactly match the columns the model was trained on
-# (original names with spaces and brackets as used during training)
 FEATURE_COLUMNS = [
     "Air temperature [K]",
     "Process temperature [K]",
@@ -33,10 +27,8 @@ FEATURE_COLUMNS = [
     "Type_M",
 ]
 
-FAILURE_THRESHOLD = 0.3   # probability above which we raise a warning
+FAILURE_THRESHOLD = 0.3  
 
-
-# ── Load Model (cached so it only loads once) ─────────────────────────────────
 @st.cache_resource
 def load_model():
     """Load the trained RandomForest model from disk."""
