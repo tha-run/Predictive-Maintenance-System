@@ -1,16 +1,13 @@
-# ⚙️ Industrial IoT Predictive Maintenance System
+# Industrial IoT Predictive Maintenance System
 
 A machine learning system that predicts machine failure from industrial IoT sensor data, with a real-time Streamlit web interface.
 
----
-
-## 📌 Project Overview
+# Project Overview
 
 This project simulates a real-world Industrial IoT scenario where sensor data from machines is collected and used to predict the probability of machine failure before it occurs — enabling proactive maintenance and reducing downtime.
 
----
 
-## 🗂️ Project Structure
+# Project Structure
 
 ```
 IOT/
@@ -27,7 +24,7 @@ IOT/
 
 ---
 
-## 📊 Dataset
+# Dataset
 
 Based on the **AI4I 2020 Predictive Maintenance Dataset**.
 
@@ -46,7 +43,7 @@ Based on the **AI4I 2020 Predictive Maintenance Dataset**.
 
 ---
 
-## 🤖 ML Pipeline — `main.py`
+# ML Pipeline — `main.py`
 
 | Step | Function | Description |
 |---|---|---|
@@ -59,7 +56,7 @@ Based on the **AI4I 2020 Predictive Maintenance Dataset**.
 | 7 | `save_model()` | Save trained model as `.pkl` using `joblib` |
 | — | `predict_machine_failure()` | Real-time inference — returns failure probability for a sensor reading |
 
-### Model Performance
+# Model Performance
 
 | Metric | Score |
 |---|---|
@@ -69,7 +66,7 @@ Based on the **AI4I 2020 Predictive Maintenance Dataset**.
 | F1 Score | 71.43% |
 | **ROC-AUC** | **96.38%** |
 
-### Top Feature Importances
+# Top Feature Importances
 
 | Feature | Importance |
 |---|---|
@@ -81,26 +78,26 @@ Based on the **AI4I 2020 Predictive Maintenance Dataset**.
 
 ---
 
-## 🖥️ Streamlit App — `app.py`
+# Streamlit App — `app.py`
 
 A clean web interface for real-time failure prediction.
 
-### Features
+# Features
 - Input sliders/fields for all 6 sensor readings
 - Machine Type dropdown (L / M / H)
 - Displays **failure probability** (4 decimal places)
-- 🚨 Warning banner if probability > 0.30
-- ✅ Success banner if probability ≤ 0.30
+- Warning banner if probability > 0.30
+- Success banner if probability ≤ 0.30
 - Collapsible input summary table
 - Sidebar with model info
 
 ---
 
-## ✅ Prerequisites
+# Prerequisites
 
 Make sure you have the following installed before running the project:
 
-### 🐍 Python
+# Python
 - Python **3.9 or higher** is required
 - Download from: https://www.python.org/downloads/
 - Verify installation:
@@ -108,14 +105,14 @@ Make sure you have the following installed before running the project:
   python --version
   ```
 
-### 📦 pip
+# pip
 - Comes bundled with Python 3.9+
 - Verify installation:
   ```bash
   pip --version
   ```
 
-### 🍺 Homebrew (macOS only — required for XGBoost)
+# Homebrew (macOS only — required for XGBoost)
 - Required to install the OpenMP runtime on macOS
 - Install Homebrew:
   ```bash
@@ -126,7 +123,7 @@ Make sure you have the following installed before running the project:
   brew install libomp
   ```
 
-### 📚 Python Libraries
+# Python Libraries
 
 | Library | Version | Purpose |
 |---|---|---|
@@ -143,39 +140,39 @@ Make sure you have the following installed before running the project:
 > pip install pandas numpy scikit-learn matplotlib seaborn joblib streamlit
 > ```
 
-### 🖥️ System Requirements
+# System Requirements
 - OS: macOS, Linux, or Windows 10/11
 - RAM: 4 GB minimum (8 GB recommended)
 - Disk: ~200 MB free space
 
 ---
 
-## 🚀 Getting Started
+# Gitting Started
 
-### 1. Clone the repository
+# 1. Clone the repository
 ```bash
 git clone https://github.com/tha-run/Predictive-Maintenance-System.git
 cd Predictive-Maintenance-System
 ```
 
-### 2. Create a virtual environment
+# 2. Create a virtual environment
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # macOS / Linux
 .venv\Scripts\activate           # Windows
 ```
 
-### 3. Install dependencies
+# 3. Install dependencies
 ```bash
 pip install pandas numpy scikit-learn matplotlib seaborn joblib streamlit
 ```
 
-### 4. Train the model
+# 4. Train the model
 ```bash
 python main.py
 ```
 
-### 5. Launch the Streamlit app
+# 5. Launch the Streamlit app
 ```bash
 streamlit run app.py
 ```
