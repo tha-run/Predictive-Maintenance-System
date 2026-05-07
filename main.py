@@ -1,13 +1,8 @@
 """
-========================================================
-  Industrial IoT Predictive Maintenance System
+  Predictive Maintenance System
   Dataset :Predictive Maintenance Dataset (AI4I 2020)
   Model   : RandomForestClassifier
-  Goal    : Predict machine failure from sensor data
-========================================================
 """
-
-# ── Standard & Third-Party Imports ───────────────────────────────────────────
 import os
 import warnings
 import numpy as np
@@ -32,29 +27,18 @@ from sklearn.metrics import (
 
 warnings.filterwarnings("ignore")
 sns.set_theme(style="whitegrid", palette="muted")
-
-# ── Global Paths ──────────────────────────────────────────────────────────────
 DATA_PATH  = os.path.join("data", "data.csv")
 MODEL_DIR  = "model"
 MODEL_PATH = os.path.join(MODEL_DIR, "predictive_maintenance_model.pkl")
-
-# Stored after preprocessing so predict_machine_failure() can reuse them
 _feature_columns: list = []
 _model: RandomForestClassifier = None
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# STEP 1 ▸ Load Data
-# ─────────────────────────────────────────────────────────────────────────────
 def load_data(path: str = DATA_PATH) -> pd.DataFrame:
-    """Load the raw CSV dataset from disk."""
     print("\n" + "=" * 60)
     print("  STEP 1 ▸ Loading Dataset")
     print("=" * 60)
 
     df = pd.read_csv(path)
-
-    # ── Basic Inspection ──────────────────────────────────────────────────────
     print(f"\n  Dataset shape : {df.shape[0]:,} rows × {df.shape[1]} columns")
 
     print("\n  Missing values per column:")
@@ -73,29 +57,17 @@ def load_data(path: str = DATA_PATH) -> pd.DataFrame:
 
 
 def _detect_target(df: pd.DataFrame) -> str:
-    """Auto-detect the target column (case-insensitive match for 'failure')."""
     for col in df.columns:
         if "failure" in col.lower() and "type" not in col.lower():
             return col
     raise ValueError("Could not auto-detect a target column containing 'failure'.")
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# STEP 2 ▸ Preprocess Data
-# ─────────────────────────────────────────────────────────────────────────────
 def preprocess_data(df: pd.DataFrame):
-    """
-    • Drop irrelevant ID / index columns
-    • One-hot encode categorical features (e.g. Machine Type)
-    • Separate features X and target y
-    """
     global _feature_columns
 
     print("\n" + "=" * 60)
     print("  STEP 2 ▸ Preprocessing")
     print("=" * 60)
-
-    # Drop obvious non-feature columns (ids, UDI, product ids, etc.)
     drop_candidates = [c for c in df.columns if c.lower() in {"udi", "product id", "productid"}]
     if drop_candidates:
         df = df.drop(columns=drop_candidates)
@@ -103,17 +75,15 @@ def preprocess_data(df: pd.DataFrame):
 
     target_col = _detect_target(df)
 
-    # Separate target before encoding
     y = df[target_col].astype(int)
     X = df.drop(columns=[target_col])
 
-    # Also drop any secondary failure-type flag columns (e.g. TWF, HDF, …)
     secondary = [c for c in X.columns if c.lower() in {"twf", "hdf", "pwf", "osf", "rnf"}]
     if secondary:
         X = X.drop(columns=secondary)
         print(f"  Dropped secondary failure flags : {secondary}")
 
-    # One-hot encode categorical columns
+  
     cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
     if cat_cols:
         print(f"\n  One-hot encoding categorical columns : {cat_cols}")
@@ -127,12 +97,7 @@ def preprocess_data(df: pd.DataFrame):
 
     return X, y
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# STEP 3 ▸ Train / Test Split
-# ─────────────────────────────────────────────────────────────────────────────
 def split_data(X: pd.DataFrame, y: pd.Series):
-    """Stratified 80 / 20 split to preserve class proportions."""
     print("\n" + "=" * 60)
     print("  STEP 3 ▸ Train-Test Split  (80 / 20, stratified)")
     print("=" * 60)
@@ -145,15 +110,8 @@ def split_data(X: pd.DataFrame, y: pd.Series):
     print(f"  Test samples     : {len(X_test):,}")
     return X_train, X_test, y_train, y_test
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# STEP 4 ▸ Train Model
-# ─────────────────────────────────────────────────────────────────────────────
 def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> RandomForestClassifier:
-    """
-    Train a Random Forest with class_weight='balanced' to handle
-    the typical class imbalance in failure datasets.
-    """
+    
     global _model
 
     print("\n" + "=" * 60)
@@ -175,28 +133,18 @@ def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> RandomForestClassi
     _model = model
     return model
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# STEP 5 ▸ Evaluate Model
-# ─────────────────────────────────────────────────────────────────────────────
 def evaluate_model(
     model: RandomForestClassifier,
     X_test: pd.DataFrame,
     y_test: pd.Series,
 ):
-    """
-    Compute and print:
-      Accuracy · Precision · Recall · F1 · ROC-AUC
-      Confusion Matrix · Classification Report
-
-    Returns predictions and probabilities for downstream plotting.
-    """
+    
     print("\n" + "=" * 60)
     print("  STEP 5 ▸ Model Evaluation")
     print("=" * 60)
 
     y_prob = model.predict_proba(X_test)[:, 1]
-    y_pred = (y_prob > 0.3).astype(int)  # probability of class 1
+    y_pred = (y_prob > 0.3).astype(int)  
 
     acc       = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, zero_division=0)
@@ -205,7 +153,7 @@ def evaluate_model(
     roc_auc   = roc_auc_score(y_test, y_prob)
     cm        = confusion_matrix(y_test, y_pred)
 
-    # ── Pretty-print metrics ──────────────────────────────────────────────────
+  
     print(f"""
   ┌─────────────────────────────────────────┐
   │  Metric          │  Value               │
@@ -225,7 +173,6 @@ def evaluate_model(
     print("\n  Classification Report:")
     print(classification_report(y_test, y_pred, target_names=["No Failure", "Failure"]))
 
-    # ── Feature Importance ────────────────────────────────────────────────────
     print("  Top-10 Feature Importances (descending):")
     importance_df = pd.DataFrame({
         "Feature"   : _feature_columns,
@@ -236,9 +183,6 @@ def evaluate_model(
 
     return y_pred, y_prob, cm, importance_df
 
-# ─────────────────────────────────────────────────────────────────────────────
-# STEP 6 ▸ Plot Results
-# ─────────────────────────────────────────────────────────────────────────────
 def plot_results(
     y_test: pd.Series,
     y_pred: np.ndarray,
@@ -246,7 +190,7 @@ def plot_results(
     cm: np.ndarray,
     importance_df: pd.DataFrame,
 ):
-    """Generate three publication-quality plots saved as PNG files."""
+    
 
     print("\n" + "=" * 60)
     print("  STEP 6 ▸ Plotting Results")
@@ -255,7 +199,7 @@ def plot_results(
     fig, axes = plt.subplots(1, 3, figsize=(20, 6))
     fig.suptitle("Industrial IoT — Predictive Maintenance Dashboard", fontsize=15, fontweight="bold")
 
-    # ── Plot 1 ▸ Confusion Matrix Heatmap ────────────────────────────────────
+   
     ax1 = axes[0]
     sns.heatmap(
         cm,
@@ -270,8 +214,6 @@ def plot_results(
     ax1.set_title("Confusion Matrix", fontsize=13, fontweight="bold")
     ax1.set_xlabel("Predicted Label", fontsize=11)
     ax1.set_ylabel("True Label", fontsize=11)
-
-    # ── Plot 2 ▸ ROC Curve ────────────────────────────────────────────────────
     ax2 = axes[1]
     fpr, tpr, _ = roc_curve(y_test, y_prob)
     auc_score   = roc_auc_score(y_test, y_prob)
@@ -285,8 +227,6 @@ def plot_results(
     ax2.legend(loc="lower right", fontsize=10)
     ax2.set_xlim([0, 1])
     ax2.set_ylim([0, 1.02])
-
-    # ── Plot 3 ▸ Feature Importance ───────────────────────────────────────────
     ax3 = axes[2]
     top_n   = min(10, len(importance_df))
     top_imp = importance_df.head(top_n)
@@ -311,11 +251,9 @@ def plot_results(
     plt.show()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# STEP 7 ▸ Save Model
-# ─────────────────────────────────────────────────────────────────────────────
+
 def save_model(model: RandomForestClassifier, path: str = MODEL_PATH):
-    """Persist the trained model to disk using joblib."""
+    
     print("\n" + "=" * 60)
     print("  STEP 7 ▸ Saving Model")
     print("=" * 60)
@@ -326,54 +264,27 @@ def save_model(model: RandomForestClassifier, path: str = MODEL_PATH):
     print(f"\n  Model saved → {path}  ({size_kb:.1f} KB) ✓")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# REAL-TIME INFERENCE ▸ predict_machine_failure()
-# ─────────────────────────────────────────────────────────────────────────────
 def predict_machine_failure(input_dict: dict) -> float:
-    """
-    Simulate real-time inference for a single machine reading.
-
-    Parameters
-    ----------
-    input_dict : dict
-        Raw sensor readings, e.g.:
-        {
-            "Air temperature [K]"     : 298.1,
-            "Process temperature [K]" : 308.6,
-            "Rotational speed [rpm]"  : 1551,
-            "Torque [Nm]"             : 42.8,
-            "Tool wear [min]"         : 108,
-            "Type"                    : "M"
-        }
-
-    Returns
-    -------
-    float
-        Probability of machine failure (0.0 – 1.0).
-    """
+  
     if _model is None:
         raise RuntimeError("Model has not been trained yet. Run main() first.")
 
-    # Build a single-row DataFrame aligned to training features
     sample_df = pd.DataFrame([input_dict])
 
-    # One-hot encode categorical columns (same logic as preprocess_data)
+    
     cat_cols = sample_df.select_dtypes(include=["object", "category"]).columns.tolist()
     if cat_cols:
         sample_df = pd.get_dummies(sample_df, columns=cat_cols, drop_first=False)
 
-    # Align columns with the training feature set (fill missing dummies with 0)
+  
     sample_df = sample_df.reindex(columns=_feature_columns, fill_value=0)
 
     prob = _model.predict_proba(sample_df)[0, 1]
     return float(prob)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ENTRY POINT
-# ─────────────────────────────────────────────────────────────────────────────
 def main():
-    # ── Pipeline ──────────────────────────────────────────────────────────────
+    
     df                              = load_data()
     X, y                            = preprocess_data(df)
     X_train, X_test, y_train, y_test = split_data(X, y)
@@ -381,13 +292,9 @@ def main():
     y_pred, y_prob, cm, imp_df      = evaluate_model(model, X_test, y_test)
     plot_results(y_test, y_pred, y_prob, cm, imp_df)
     save_model(model)
-
-    # ── Real-time Inference Demo ───────────────────────────────────────────────
     print("\n" + "=" * 60)
     print("  DEMO ▸ Real-Time Inference")
     print("=" * 60)
-
-    # Take a random sample from the test set and reconstruct its raw dict
     sample_index = X_test.sample(1, random_state=0).index[0]
     sample_input = X_test.loc[[sample_index]].to_dict(orient="records")[0]
 
