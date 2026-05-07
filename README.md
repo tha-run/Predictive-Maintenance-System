@@ -169,6 +169,12 @@ Then open **http://localhost:8501** in your browser.
 
 #  PROJECT IMAGE
 
+<img width="1470" height="956" alt="Screenshot 2026-05-07 at 7 11 18 PM" src="https://github.com/user-attachments/assets/6699d78f-6a92-483f-b49a-bf4b3c92ca73" />
+<img width="1470" height="956" alt="Screenshot 2026-05-07 at 7 11 23 PM" src="https://github.com/user-attachments/assets/119d8bf4-29dd-4bda-932c-e616bfe8edfb" />
+<img width="1470" height="956" alt="Screenshot 2026-05-07 at 7 12 22 PM" src="https://github.com/user-attachments/assets/29851732-034b-4f14-842a-9b75d86b30c7" />
+<img width="1470" height="956" alt="Screenshot 2026-05-07 at 7 12 25 PM" src="https://github.com/user-attachments/assets/4792c0b1-3b8f-4428-86e8-a7f418daba5c" />
+
+
 
 
 ---
