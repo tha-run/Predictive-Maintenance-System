@@ -1,11 +1,3 @@
-"""
-========================================================
-  Industrial IoT Predictive Maintenance System
-  Frontend : Streamlit Application
-  Purpose  : Real-time machine failure probability prediction
-========================================================
-"""
-
 import joblib
 import pandas as pd
 import streamlit as st
@@ -36,17 +28,11 @@ def load_model():
 
 
 model = load_model()
-
-
-# ── Header ────────────────────────────────────────────────────────────────────
 st.title("⚙️ Industrial IoT Predictive Maintenance")
 st.markdown(
     "Enter the current sensor readings below to predict the **probability of machine failure** in real time."
 )
 st.divider()
-
-
-# ── Sidebar — About ───────────────────────────────────────────────────────────
 with st.sidebar:
     st.header("ℹ️ About")
     st.markdown(
@@ -67,9 +53,6 @@ with st.sidebar:
         """
     )
     st.info("No data is stored or transmitted. All inference runs locally.")
-
-
-# ── Input Form ────────────────────────────────────────────────────────────────
 st.subheader("🔧 Sensor Input")
 
 col1, col2 = st.columns(2)
@@ -115,13 +98,7 @@ with col2:
     )
 
 st.divider()
-
-
-# ── Predict Button ────────────────────────────────────────────────────────────
 if st.button("🔍 Predict Failure Probability", use_container_width=True, type="primary"):
-
-    # ── Build one-hot encoded input row ──────────────────────────────────────
-    # Start with all Type_* columns set to 0, then flip the selected one
     input_data = {
         "Air temperature [K]"     : air_temp,
         "Process temperature [K]" : process_temp,
@@ -132,15 +109,9 @@ if st.button("🔍 Predict Failure Probability", use_container_width=True, type=
         "Type_L"                  : 1 if machine_type == "L" else 0,
         "Type_M"                  : 1 if machine_type == "M" else 0,
     }
-
-    # Convert to DataFrame and align column order exactly as training
     input_df = pd.DataFrame([input_data])[FEATURE_COLUMNS]
-
-    # ── Run inference ─────────────────────────────────────────────────────────
     failure_prob  = model.predict_proba(input_df)[0, 1]
     predicted_label = int(failure_prob >= FAILURE_THRESHOLD)
-
-    # ── Display Results ───────────────────────────────────────────────────────
     st.subheader("📊 Prediction Result")
 
     res_col1, res_col2 = st.columns(2)
@@ -158,8 +129,6 @@ if st.button("🔍 Predict Failure Probability", use_container_width=True, type=
             label="Predicted Status",
             value="⚠️ FAILURE" if predicted_label == 1 else "✅ NORMAL",
         )
-
-    # ── Alert Banner ──────────────────────────────────────────────────────────
     if failure_prob > FAILURE_THRESHOLD:
         st.warning(
             f"⚠️ **High failure risk detected!**  "
@@ -172,8 +141,6 @@ if st.button("🔍 Predict Failure Probability", use_container_width=True, type=
             f"Failure probability is **{failure_prob:.4f}** — no action required.",
             icon="✅",
         )
-
-    # ── Input Summary ─────────────────────────────────────────────────────────
     with st.expander("📋 View Input Summary"):
         st.dataframe(
             input_df.T.rename(columns={0: "Value"}),
