@@ -97,32 +97,6 @@ A clean web interface for real-time failure prediction.
 
 Make sure you have the following installed before running the project:
 
-# Python
-- Python **3.9 or higher** is required
-- Download from: https://www.python.org/downloads/
-- Verify installation:
-  ```bash
-  python --version
-  ```
-
-# pip
-- Comes bundled with Python 3.9+
-- Verify installation:
-  ```bash
-  pip --version
-  ```
-
-# Homebrew (macOS only — required for XGBoost)
-- Required to install the OpenMP runtime on macOS
-- Install Homebrew:
-  ```bash
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  ```
-- Then install OpenMP:
-  ```bash
-  brew install libomp
-  ```
-
 # Python Libraries
 
 | Library | Version | Purpose |
@@ -136,16 +110,7 @@ Make sure you have the following installed before running the project:
 | `streamlit` | ≥ 1.28 | Web frontend |
 
 > Install all at once:
-> ```bash
 > pip install pandas numpy scikit-learn matplotlib seaborn joblib streamlit
-> ```
-
-# System Requirements
-- OS: macOS, Linux, or Windows 10/11
-- RAM: 4 GB minimum (8 GB recommended)
-- Disk: ~200 MB free space
-
----
 
 # Gitting Started
 
@@ -181,7 +146,7 @@ Then open **http://localhost:8501** in your browser.
 
 ---
 
-## 🛠️ Tech Stack
+#  Tech Stack
 
 | Library | Purpose |
 |---|---|
@@ -194,7 +159,7 @@ Then open **http://localhost:8501** in your browser.
 
 ---
 
-## 📈 Evaluation Dashboard
+#  Evaluation Dashboard
 
 ![Dashboard](model/dashboard.png)
 
